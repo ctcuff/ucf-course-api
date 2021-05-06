@@ -5,16 +5,18 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon --exec 'yarn lint && babel-node ./src/index.js'",
+    "dev": "nodemon --exec 'yarn lint && babel-node ./src/index.js' | pino-pretty",
     "lint": "eslint './src/**/*.js'"
   },
   "dependencies": {
-    "@babel/eslint-parser": "^7.13.14",
     "cheerio": "^1.0.0-rc.6",
     "express": "^4.17.1",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "pino": "^6.11.3",
+    "pino-pretty": "^4.7.1"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.13.14",
     "@babel/cli": "^7.13.16",
     "@babel/core": "^7.14.0",
     "@babel/node": "^7.13.13",
