@@ -16,5 +16,6 @@
     "comma-dangle": ["error", "never"],
     "operator-linebreak": "off",
     "arrow-parens": ["error", "as-needed"]
-  }
+  },
+  "ignorePatterns": ["dist/**/*.js"]
 }
