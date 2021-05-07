@@ -1,0 +1,7 @@
+{
+  // Allows vscode intellisense for global jest object
+  "typeAcquisition": {
+    "include": ["jest"]
+  },
+  "exclude": ["node_modules", "dist"]
+}

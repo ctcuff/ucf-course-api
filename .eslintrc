@@ -3,9 +3,11 @@
   "env": {
     "browser": false,
     "es6": true,
-    "node": true
+    "node": true,
+    "jest/globals": true
   },
   "parser": "@babel/eslint-parser",
+  "plugins": ["jest"],
   "rules": {
     "semi": ["error", "never"],
     "no-console": "warn",
