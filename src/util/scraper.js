@@ -62,8 +62,12 @@ class Scraper {
       return course
     }
 
-    const prefix = course.substring(0, 3).trim().replace(/\s+/, '')
-    const code = course.substring(3).trim().replace(/\s+/, '')
+    const prefix = course
+      .substring(0, 3)
+      .trim()
+      .replace(/\s+/, '')
+      .toUpperCase()
+    const code = course.substring(3).trim().replace(/\s+/, '').toUpperCase()
 
     return { prefix, code }
   }
