@@ -16,7 +16,7 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ): void => {
-  logger.error(err.stack)
+  logger.error(err.stack as string)
   res.status(err.status).send({ error: err.message })
 
   next()

@@ -8,12 +8,11 @@ class Scraper {
    * Takes a path and builds a URL from that path appending
    * any optional query params if passed (note that all query
    * params will be encoded)
-   *
-   * @param {string} path
-   * @param {Object<string, string | number>?} query
-   * @returns {string}
    */
-  static buildUrl(path, query = {}) {
+  static buildUrl(
+    path: string,
+    query: { [key: string]: string | number } = {}
+  ): string {
     const searchParams = Object.entries(query)
       .filter(([key, value]) => !!key && value !== undefined && value !== null)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
@@ -28,11 +27,11 @@ class Scraper {
 
   /**
    * Makes a request to the UCF course site and returns the page's HTML
-   * @param {string} path
-   * @param {Object<string, string | number>?} query
-   * @returns {string}
    */
-  static async getHTML(path, query = {}) {
+  static async getHTML(
+    path: string,
+    query: { [key: string]: string | number } = {}
+  ): Promise<string> {
     const url = Scraper.buildUrl(path, query)
     const response = await fetch(url)
     const html = response.text()
@@ -49,18 +48,9 @@ class Scraper {
    * parseCoursePrefix('ENC1101') === { prefix: 'ENC', code: '1101' }
    * parseCoursePrefix('ENC%201101') === { prefix: 'ENC', code: '1101' }
    * ```
-   *
-   * @param {string} str
-   * @returns {{ prefix: string, code: string }}
    */
-  static parseCourseTitle(str) {
-    const course = decodeURIComponent(str.trim())
-
-    // This string is already properly encoded if it has a space between
-    // the course title and course code
-    if (course.substring(3, 6) === '%20') {
-      return course
-    }
+  static parseCourseTitle(title: string): { prefix: string; code: string } {
+    const course = decodeURIComponent(title.trim())
 
     const prefix = course
       .substring(0, 3)
@@ -73,4 +63,4 @@ class Scraper {
   }
 }
 
-export { Scraper as default, BASE_URL }
+export default Scraper
