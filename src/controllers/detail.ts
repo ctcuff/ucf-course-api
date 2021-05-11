@@ -1,4 +1,5 @@
-import cheerio from 'cheerio'
+import * as cheerio from 'cheerio'
+import { Request, Response, NextFunction } from 'express'
 import Scraper from '../util/scraper'
 import logger from '../util/logger'
 import ExpressError from '../util/error-handler'
@@ -6,12 +7,11 @@ import ExpressError from '../util/error-handler'
 /**
  * Takes a list item (<li />) and extracts that list item's label
  * and title into a single object
- *
- * @param {cheerio.Root} $
- * @param {Element} li
- * @returns {{ [key: string]: string }}
  */
-const parseListItem = ($, li) => {
+const parseListItem = (
+  $: cheerio.Root,
+  li: cheerio.Element
+): { [key: string]: string } => {
   const title = $(li).find('span.kgoui_list_item_title').text()
   const label = $(li)
     .find('div.kgoui_list_item_label')
@@ -40,25 +40,14 @@ const parseListItem = ($, li) => {
 /**
  * Parses each section and groups them into an array with each
  * section as an object
- *
- * @typedef {Object} CourseSection
- * @property {string} id
- * @property {string} begin
- * @property {string} end
- * @property {string} schedule
- * @property {string} building
- * @property {string} room
- * @property {string} instructor
- *
- * @param {cheerio.Root} $
- * @returns {CourseSection[]}
  */
-const parseSections = $ => {
+const parseSections = ($: cheerio.Root): CourseSection[] => {
   // The outer div that wraps each section block
   const sectionsElements = $(
     'div.kgoui_object.kgoui_array.kgoui_list.kgo_clearfix.kgoui_list_grouped'
   )
 
+  // Take each section block and parse each list item
   const sections = sectionsElements
     .map((_, element) => {
       // eslint-disable-next-line newline-per-chained-call
@@ -87,20 +76,22 @@ const parseSections = $ => {
     })
     .toArray()
 
+  // Need to tell TS that this is NOT a cheerio array
+  // @ts-ignore
   return sections
 }
 
 class Detail {
-  static async getCourse(req, res) {
+  static async getCourse(req: Request, res: Response): Promise<Response> {
     const { prefix, code } = Scraper.parseCourseTitle(req.params.course)
 
     const html = await Scraper.getHTML('/detail', {
-      term: req.query.term,
+      term: req.query.term as string,
       area: prefix,
       course: `${prefix} ${code}`
     })
 
-    const $ = cheerio.load(html, null, false)
+    const $ = cheerio.load(html)
     const detailHeader = $('div.kgo_inset.kgoui_detail_header')
     const title = detailHeader.find('h1.kgoui_detail_title').text()
     const [, courseName] = title.split(':')
@@ -118,16 +109,20 @@ class Detail {
     })
   }
 
-  static async getSection(req, res, next) {
+  static async getSection(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
     const { prefix, code } = Scraper.parseCourseTitle(req.params.course)
 
     const html = await Scraper.getHTML('/detail', {
-      term: req.query.term,
+      term: req.query.term as string,
       area: prefix,
       course: `${prefix} ${code}`
     })
 
-    const $ = cheerio.load(html, null, false)
+    const $ = cheerio.load(html)
     const sections = parseSections($)
     const section = sections.find(item => item.id === req.params.sectionId)
 
@@ -142,6 +137,16 @@ class Detail {
 
     return res.send(section)
   }
+}
+
+type CourseSection = {
+  id: string
+  begin: string
+  end: string
+  schedule: string
+  building: string
+  room: string
+  instructor: string
 }
 
 export default Detail

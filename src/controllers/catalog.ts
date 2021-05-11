@@ -1,12 +1,13 @@
-import cheerio from 'cheerio'
+import * as cheerio from 'cheerio'
+import { Request, Response } from 'express'
 import Scraper from '../util/scraper'
 
 class Catalog {
-  static async getAll(req, res) {
+  static async getAll(req: Request, res: Response): Promise<Response> {
     const html = await Scraper.getHTML('/catalog', {
-      term: req.query.term
+      term: req.query.term as string
     })
-    const $ = cheerio.load(html, null, false)
+    const $ = cheerio.load(html)
     const listElement = $(
       'li[data-type="content"] div.kgoui_list_item_textblock'
     )
@@ -25,12 +26,12 @@ class Catalog {
     return res.send(result)
   }
 
-  static async getArea(req, res) {
+  static async getArea(req: Request, res: Response): Promise<Response> {
     const html = await Scraper.getHTML('/catalog', {
       area: req.params.area,
-      term: req.query.term
+      term: req.query.term as string
     })
-    const $ = cheerio.load(html, null, false)
+    const $ = cheerio.load(html)
     const listElement = $(
       'li[data-type="content"] div.kgoui_list_item_textblock'
     )
