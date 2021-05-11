@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "babel ./src -d dist --ignore src/__tests__/**/*",
-    "dev": "nodemon --exec 'yarn lint && babel-node ./src/server.js' | pino-pretty",
+    "dev": "nodemon --exec 'babel-node ./src/server.js' | pino-pretty",
     "lint": "eslint './src/**/*.js'",
     "start": "node ./dist/server.js | pino-pretty",
     "test": "jest --bail --passWithNoTests --coverage"
@@ -14,6 +14,7 @@
   "dependencies": {
     "@babel/runtime": "^7.14.0",
     "cheerio": "^1.0.0-rc.6",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "node-fetch": "^2.6.1",
     "pino": "^6.11.3",
