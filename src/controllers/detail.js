@@ -1,6 +1,7 @@
 import cheerio from 'cheerio'
 import Scraper from '../util/scraper'
 import logger from '../util/logger'
+import ExpressError from '../util/error-handler'
 
 /**
  * Takes a list item (<li />) and extracts that list item's label
@@ -117,7 +118,7 @@ class Detail {
     })
   }
 
-  static async getSection(req, res) {
+  static async getSection(req, res, next) {
     const { prefix, code } = Scraper.parseCourseTitle(req.params.course)
 
     const html = await Scraper.getHTML('/detail', {
@@ -131,9 +132,12 @@ class Detail {
     const section = sections.find(item => item.id === req.params.sectionId)
 
     if (!section) {
-      return res
-        .status(404)
-        .send({ error: `Couldn't find section with ID ${req.query.sectionId}` })
+      return next(
+        new ExpressError({
+          message: `Couldn't find section with ID ${req.params.sectionId}`,
+          status: 404
+        })
+      )
     }
 
     return res.send(section)
