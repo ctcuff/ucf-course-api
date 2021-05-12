@@ -18,6 +18,7 @@
     "@typescript-eslint/semi": ["error", "never"],
     "@typescript-eslint/comma-dangle": ["error", "never"],
     "@typescript-eslint/ban-ts-comment": "off",
+    "implicit-arrow-linebreak": "off",
     "no-console": "warn",
     "no-unused-vars": ["error", { "args": "after-used" }],
     "no-mixed-spaces-and-tabs": "error",

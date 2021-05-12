@@ -2,7 +2,7 @@ import * as cheerio from 'cheerio'
 import { Request, Response, NextFunction } from 'express'
 import Scraper from '../util/scraper'
 import logger from '../util/logger'
-import ExpressError from '../util/error-handler'
+import ExpressError from '../util/express-error'
 
 /**
  * Takes a list item (<li />) and extracts that list item's label
@@ -124,7 +124,10 @@ class Detail {
 
     const $ = cheerio.load(html)
     const sections = parseSections($)
-    const section = sections.find(item => item.id === req.params.sectionId)
+    const section = sections.find(
+      item =>
+        item.id.toLocaleLowerCase() === req.params.sectionId.toLocaleLowerCase()
+    )
 
     if (!section) {
       return next(

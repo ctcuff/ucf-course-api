@@ -61,6 +61,40 @@ class Scraper {
 
     return { prefix, code }
   }
+
+  /**
+   * Takes the name and year of a term and converts it to the code for that
+   * term used by UCF. We do this by taking the semester and finding the
+   * difference multiplied by 10 and offset by a factor of 30.
+   *
+   * Example:
+   * ```
+   * parseTerm('spring2021') === '1710'
+   * parseTerm('fall 2022') === '1760'
+   * ```
+   */
+  static parseTerm(term: string): string {
+    const baseTerm = 1710
+    const baseYear = 2021
+    const terms = ['spring', 'summer', 'fall']
+
+    const termCode = term.toLocaleLowerCase()
+
+    const name = termCode.substring(0, termCode.length - 4)
+    const year = parseInt(termCode.substring(termCode.length - 4), 10)
+
+    let termDiff = terms.indexOf(name)
+
+    if (termDiff === -1 || Number.isNaN(year)) {
+      return ''
+    }
+
+    termDiff *= 10
+
+    const yearDiff = year - baseYear
+
+    return `${baseTerm + (termDiff + yearDiff * 30)}`
+  }
 }
 
 export default Scraper
