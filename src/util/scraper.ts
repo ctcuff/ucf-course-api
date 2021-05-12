@@ -35,8 +35,9 @@ class Scraper {
   ): Promise<string> {
     const url = Scraper.buildUrl(path, query)
     const response = await fetch(url)
-    const html = response.text()
+    const html = await response.text()
 
+    /* istanbul ignore next */
     if (process.env.NODE_ENV !== 'production') {
       logger.info(`Request to ${url}`)
     }
@@ -102,4 +103,4 @@ class Scraper {
   }
 }
 
-export default Scraper
+export { Scraper as default, BASE_URL }
