@@ -1,4 +1,5 @@
 import fetch from 'node-fetch'
+import logger from './logger'
 
 const BASE_URL =
   'https://centralflorida-prod.modolabs.net/student/course_search_prod'
@@ -35,6 +36,10 @@ class Scraper {
     const url = Scraper.buildUrl(path, query)
     const response = await fetch(url)
     const html = response.text()
+
+    if (process.env.NODE_ENV !== 'production') {
+      logger.info(`Request to ${url}`)
+    }
 
     return html
   }
@@ -78,7 +83,7 @@ class Scraper {
     const baseYear = 2021
     const terms = ['spring', 'summer', 'fall']
 
-    const termCode = term.toLocaleLowerCase()
+    const termCode = term.toLocaleLowerCase().trim().replace(/\s+/, '')
 
     const name = termCode.substring(0, termCode.length - 4)
     const year = parseInt(termCode.substring(termCode.length - 4), 10)

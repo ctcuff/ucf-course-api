@@ -9,8 +9,10 @@ const app = express()
 
 app.use(cors())
 app.use(convertTerm)
+
 app.use('/catalog', catalogRouter)
 app.use('/detail', detailRouter)
+
 app.use(errorHandler)
 
 export default app
