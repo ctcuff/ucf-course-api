@@ -30,6 +30,12 @@ describe('Scraper', () => {
 
     expect(html).toEqual(expect.any(String))
     expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/catalog?area=COP`)
+
+    // Need to make sure this function gets called with the default value for
+    // query so that branch gets covered
+    await Scraper.getHTML('/some-other-route')
+
+    expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/some-other-route`)
   })
 
   test('parseCourseTitle returns prefix and course code', () => {
