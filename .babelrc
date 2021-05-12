@@ -3,5 +3,9 @@
   "plugins": [
     "@babel/plugin-transform-runtime",
     "@babel/proposal-class-properties"
+  ],
+  "ignore": [
+    "src/__tests__/**/*",
+    "src/__mocks__/**/*"
   ]
 }
