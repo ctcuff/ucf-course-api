@@ -82,7 +82,11 @@ const parseSections = ($: cheerio.Root): CourseSection[] => {
 }
 
 class Detail {
-  static async getCourse(req: Request, res: Response): Promise<Response> {
+  static async getCourse(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     const { prefix, code } = Scraper.parseCourseTitle(req.params.course)
 
     const html = await Scraper.getHTML('/detail', {
@@ -92,6 +96,21 @@ class Detail {
     })
 
     const $ = cheerio.load(html)
+    const pageRoot = $(
+      'div.kgoui_object.kgoui_detail.kgoui_detail_modo_catalog_course.kgo_responsive_typography'
+    )
+
+    if (pageRoot.length === 0) {
+      next(
+        new ExpressError({
+          message: "Couldn't find course",
+          status: 404
+        })
+      )
+
+      return
+    }
+
     const detailHeader = $('div.kgo_inset.kgoui_detail_header')
     const title = detailHeader.find('h1.kgoui_detail_title').text()
     const [, courseName] = title.split(':')
@@ -101,7 +120,7 @@ class Detail {
       .replace(/"/g, '') // Remove all double quotes
       .replace(/\n/, ' ')
 
-    return res.send({
+    res.send({
       course: `${prefix} ${code}`,
       courseName,
       description,
@@ -113,7 +132,7 @@ class Detail {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response | void> {
+  ): Promise<void> {
     const { prefix, code } = Scraper.parseCourseTitle(req.params.course)
 
     const html = await Scraper.getHTML('/detail', {
@@ -130,15 +149,17 @@ class Detail {
     )
 
     if (!section) {
-      return next(
+      next(
         new ExpressError({
           message: `Couldn't find section with ID ${req.params.sectionId}`,
           status: 404
         })
       )
+
+      return
     }
 
-    return res.send(section)
+    res.send(section)
   }
 }
 

@@ -3,7 +3,7 @@ import { Request, Response } from 'express'
 import Scraper from '../util/scraper'
 
 class Catalog {
-  static async getAll(req: Request, res: Response): Promise<Response> {
+  static async getAll(req: Request, res: Response): Promise<void> {
     const html = await Scraper.getHTML('/catalog', {
       term: req.query.term as string
     })
@@ -23,10 +23,10 @@ class Catalog {
       })
       .toArray()
 
-    return res.send(result)
+    res.send(result)
   }
 
-  static async getArea(req: Request, res: Response): Promise<Response> {
+  static async getArea(req: Request, res: Response): Promise<void> {
     const html = await Scraper.getHTML('/catalog', {
       area: req.params.area,
       term: req.query.term as string
@@ -54,7 +54,7 @@ class Catalog {
       })
       .toArray()
 
-    return res.send(result)
+    res.send(result)
   }
 }
 
