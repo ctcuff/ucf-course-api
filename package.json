@@ -5,7 +5,7 @@
   "main": "server.js",
   "license": "MIT",
   "scripts": {
-    "build": "babel ./src -d dist --extensions \".ts,.js\"",
+    "build": "babel ./src -d dist --ignore src/__tests__/**/*,src/__mocks__/**/* --extensions '.ts,.js'",
     "dev": "ts-node-dev ./src/server.ts | pino-pretty",
     "lint": "eslint './src/**/*{.js,.ts}'",
     "start": "node ./dist/server.js | pino-pretty",
