@@ -1,7 +1,6 @@
 import * as cheerio from 'cheerio'
 import { Request, Response, NextFunction } from 'express'
 import Scraper from '../util/scraper'
-import logger from '../util/logger'
 import ExpressError from '../util/express-error'
 
 /**
@@ -29,11 +28,8 @@ const parseListItem = (
     case 'building':
     case 'room':
     case 'instructor':
-      return { [label]: title }
-
     default:
-      logger.warn('Invalid list item', label)
-      return {}
+      return { [label]: title }
   }
 }
 
@@ -76,9 +72,8 @@ const parseSections = ($: cheerio.Root): CourseSection[] => {
     })
     .toArray()
 
-  // Need to tell TS that this is NOT a cheerio array
-  // @ts-ignore
-  return sections
+  // Hack to tell TS that this isn't a cheerio element array
+  return (sections as unknown) as CourseSection[]
 }
 
 class Detail {
@@ -103,7 +98,7 @@ class Detail {
     if (pageRoot.length === 0) {
       next(
         new ExpressError({
-          message: "Couldn't find course",
+          message: `Couldn't find course ${prefix} ${code}`,
           status: 404
         })
       )
@@ -119,10 +114,11 @@ class Detail {
       .text()
       .replace(/"/g, '') // Remove all double quotes
       .replace(/\n/, ' ')
+      .trim()
 
     res.send({
       course: `${prefix} ${code}`,
-      courseName,
+      courseName: courseName.trim(),
       description,
       sections: parseSections($)
     })

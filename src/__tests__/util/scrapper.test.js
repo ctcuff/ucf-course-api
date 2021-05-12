@@ -1,8 +1,7 @@
-/* eslint-disable import/first */
-jest.mock('node-fetch')
-
 import fetch from 'node-fetch'
 import Scraper, { BASE_URL } from '../../util/scraper'
+
+jest.mock('node-fetch')
 
 describe('Scraper', () => {
   beforeAll(() => {
@@ -32,7 +31,7 @@ describe('Scraper', () => {
     expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/catalog?area=COP`)
 
     // Need to make sure this function gets called with the default value for
-    // query so that branch gets covered
+    // query so that all branches gets covered
     await Scraper.getHTML('/some-other-route')
 
     expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/some-other-route`)
