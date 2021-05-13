@@ -59,7 +59,8 @@
   "lint-staged": {
     "./src/**/*{.js,.ts}": [
       "prettier --write",
-      "yarn lint"
+      "yarn lint",
+      "yarn test"
     ]
   },
   "engines": {
